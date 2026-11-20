@@ -200,6 +200,9 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     const started = generation;
     const config = getConfig();
     const location = await resolveLocation(config);
+    if (started !== generation) {
+      return null;
+    }
     if (location.problem) {
       target = { station: null, area: null, place: null, problem: location.problem };
       return target;
@@ -383,7 +386,9 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     const current = levels();
     // The baseline needs every source: a warning of a source not read yet
     // would otherwise fire as new once it answers.
-    if (baseline && (current.now === null || OUTLOOK_PRODUCTS.some((product) => !files[product]))) {
+    // (The outlook needs one file at least: a product missing for days must
+    // not block the trigger forever.)
+    if (baseline && (current.now === null || !OUTLOOK_PRODUCTS.some((product) => files[product]))) {
       return;
     }
     const seen = baseline ? {} : { ...memory.seen };
