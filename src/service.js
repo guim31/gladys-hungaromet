@@ -71,6 +71,10 @@ export function createService({ gladys, client, store, logger, getConfig, now })
   let target = null; // { station, area, place, problem }
   let memory; // { area, seen }, undefined until loaded
   let lastStatus = null;
+  // Bumped by reset(): a setup started under an older config is discarded.
+  let generation = 0;
+  // Cycles run one at a time (timer, onPoll, check action).
+  let lock = Promise.resolve();
   // The last error of each failing source, for the check action.
   const lastErrors = new Map();
 
@@ -171,7 +175,12 @@ export function createService({ gladys, client, store, logger, getConfig, now })
   function reportingStations() {
     const meta = new Map((metadata?.stations ?? []).map((station) => [station.id, station]));
     return [...(observations?.byId.values() ?? [])]
-      .filter((obs) => obs.values.temperature !== undefined && obs.lat !== null)
+      .filter(
+        (obs) =>
+          obs.values.temperature !== undefined &&
+          obs.lat !== null &&
+          now() - obs.time < OBSERVATION_MAX_AGE,
+      )
       .map((obs) => ({
         id: obs.id,
         name: obs.name,
@@ -188,6 +197,7 @@ export function createService({ gladys, client, store, logger, getConfig, now })
    * the next cycle); a configuration problem is reported in `target.problem`.
    */
   async function setup() {
+    const started = generation;
     const config = getConfig();
     const location = await resolveLocation(config);
     if (location.problem) {
@@ -232,7 +242,10 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     // (every station, reporting or not), else the one of the chosen station.
     let county = config.county;
     if (!county && place && problem !== 'outsideHungary') {
-      county = nearestStations(metadata.stations, place.lat, place.lon, 1)[0]?.county ?? null;
+      const active = metadata.stations.filter(
+        (candidate) => candidate.until >= hungarianDate(now(), -3),
+      );
+      county = nearestStations(active, place.lat, place.lon, 1)[0]?.county ?? null;
     }
     county ??= station?.county ?? null;
 
@@ -249,14 +262,19 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     const countyEntry = countyByCode(county);
     const area = countyEntry ? { county, name: countyEntry.name, district } : null;
 
+    if (started !== generation) {
+      // The config changed meanwhile: the next cycle sets up the new one.
+      return null;
+    }
+    await gladys.publishDiscoveredDevices(
+      buildDevices(gladys, { station, area, language: config.language }),
+    );
+    // Set only once the devices are published: a failure is retried next cycle.
     target = { station, area, place, problem };
     logger.info(
       `Ready: ${station ? `station ${station.id} ${station.name}` : 'no station'}, ` +
         `${area ? `warnings for ${district ? `district ${district.name}` : `county ${area.name}`}` : 'no warnings'}` +
         `${problem ? ` (${problem})` : ''}`,
-    );
-    await gladys.publishDiscoveredDevices(
-      buildDevices(gladys, { station, area, language: config.language }),
     );
     return target;
   }
@@ -280,8 +298,8 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     if (next === lastStatus) {
       return;
     }
-    lastStatus = next;
     await gladys.setConnectionStatus(connected, message);
+    lastStatus = next;
   }
 
   /** The warnings of the area for each horizon; null where the source was never read. */
@@ -362,8 +380,13 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     }
     const areaId = areaPlatformId(area);
     const baseline = memory?.area !== areaId;
-    const seen = baseline ? {} : { ...memory.seen };
     const current = levels();
+    // The baseline needs every source: a warning of a source not read yet
+    // would otherwise fire as new once it answers.
+    if (baseline && (current.now === null || OUTLOOK_PRODUCTS.some((product) => !files[product]))) {
+      return;
+    }
+    const seen = baseline ? {} : { ...memory.seen };
     const next = {};
     const fresh = [];
     const keep = (key, warning, horizon) => {
@@ -429,9 +452,57 @@ export function createService({ gladys, client, store, logger, getConfig, now })
     }
   }
 
+  async function runCycle({ forceOutlook = false } = {}) {
+    let freshSetup = false;
+    if (!target) {
+      try {
+        if (!(await setup())) {
+          return false;
+        }
+        freshSetup = true;
+      } catch (err) {
+        lastErrors.set('setup', err.message);
+        issues.fail('setup', `Setup failed (${err.message})`);
+        await reportStatus(false, TEXT.unreachable);
+        return false;
+      }
+      lastErrors.delete('setup');
+      issues.ok('setup', 'Setup done: HungaroMet answers again');
+    } else if (metadata && now() - metadata.at >= METADATA_MAX_AGE) {
+      await loadMetadata().catch(() => {});
+    }
+    const { station, area, problem } = target;
+    if (!station && !area) {
+      await reportStatus(false, TEXT[problem ?? 'notConfigured']);
+      return false;
+    }
+    const results = [];
+    if (station && !freshSetup) {
+      results.push(await attempt('observations', 'Observations', readObservations));
+    } else if (station) {
+      results.push(true);
+    }
+    if (area) {
+      results.push(await attempt('warnings', 'Warnings', readWarnings));
+      if (forceOutlook || outlookReadAt === null || now() - outlookReadAt >= OUTLOOK_MAX_AGE) {
+        results.push(await attempt('outlook', 'Warning outlook', readOutlook));
+      }
+    }
+    await publishStates();
+    await announceWarnings();
+    const anyOk = results.some(Boolean);
+    if (problem) {
+      await reportStatus(false, TEXT[problem]);
+    } else {
+      await reportStatus(anyOk, anyOk ? undefined : TEXT.unreachable);
+    }
+    return anyOk;
+  }
+
   return {
     /** Forget the target: the config changed. The files read stay valid. */
     reset() {
+      generation += 1;
       target = null;
       lastStatus = null;
     },
@@ -441,49 +512,10 @@ export function createService({ gladys, client, store, logger, getConfig, now })
      * the states, announce the new warnings, report the status.
      * @returns {Promise<boolean>} whether a source answered
      */
-    async cycle({ forceOutlook = false } = {}) {
-      let freshSetup = false;
-      if (!target) {
-        try {
-          await setup();
-          freshSetup = true;
-        } catch (err) {
-          lastErrors.set('setup', err.message);
-          issues.fail('setup', `Setup failed (${err.message})`);
-          await reportStatus(false, TEXT.unreachable);
-          return false;
-        }
-        lastErrors.delete('setup');
-        issues.ok('setup', 'Setup done: HungaroMet answers again');
-      } else if (metadata && now() - metadata.at >= METADATA_MAX_AGE) {
-        await loadMetadata().catch(() => {});
-      }
-      const { station, area, problem } = target;
-      if (!station && !area) {
-        await reportStatus(false, TEXT[problem ?? 'notConfigured']);
-        return false;
-      }
-      const results = [];
-      if (station && !freshSetup) {
-        results.push(await attempt('observations', 'Observations', readObservations));
-      } else if (station) {
-        results.push(true);
-      }
-      if (area) {
-        results.push(await attempt('warnings', 'Warnings', readWarnings));
-        if (forceOutlook || outlookReadAt === null || now() - outlookReadAt >= OUTLOOK_MAX_AGE) {
-          results.push(await attempt('outlook', 'Warning outlook', readOutlook));
-        }
-      }
-      await publishStates();
-      await announceWarnings();
-      const anyOk = results.some(Boolean);
-      if (problem) {
-        await reportStatus(false, TEXT[problem]);
-      } else {
-        await reportStatus(anyOk, anyOk ? undefined : TEXT.unreachable);
-      }
-      return anyOk;
+    cycle(options) {
+      const run = lock.then(() => runCycle(options));
+      lock = run.catch(() => {});
+      return run;
     },
 
     publishStates,
@@ -538,10 +570,14 @@ export function createService({ gladys, client, store, logger, getConfig, now })
 
     /** Read every source now (configuration action). */
     async check() {
-      target = null;
-      lastStatus = null;
-      lastErrors.clear();
-      await this.cycle({ forceOutlook: true });
+      const run = lock.then(() => {
+        target = null;
+        lastStatus = null;
+        lastErrors.clear();
+        return runCycle({ forceOutlook: true });
+      });
+      lock = run.catch(() => {});
+      await run;
       const current = levels();
       return {
         target,

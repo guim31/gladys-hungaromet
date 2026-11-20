@@ -522,3 +522,45 @@ test('the house is the first located one when none is chosen', async () => {
   assert.equal(world.gladys.fake.discoveredDevices[0].name, 'HungaroMet Pécs Egyetem');
   await world.app.stop();
 });
+
+test('devices refused by Gladys at setup are published again at the next cycle', async () => {
+  const world = await createWorld({ connect: false });
+  const publish = world.gladys.publishDiscoveredDevices.bind(world.gladys);
+  world.gladys.publishDiscoveredDevices = async () => {
+    throw new Error('HTTP 502');
+  };
+  await world.gladys.connect();
+  await world.app.ready;
+  assert.equal(world.gladys.fake.discoveredDevices.length, 0);
+  assert.equal(world.gladys.fake.connectionStatus.connected, false);
+  world.gladys.publishDiscoveredDevices = publish;
+  await world.refresh(10);
+  assert.equal(world.gladys.fake.discoveredDevices.length, 2);
+  assert.deepEqual(world.gladys.fake.connectionStatus, { connected: true });
+  await world.app.stop();
+});
+
+test('the first-run baseline waits for every source: an outlook read late does not fire', async () => {
+  const world = await createWorld({ connect: false });
+  world.hungaromet.answers['listing:wbex'] = { status: 500 };
+  await world.gladys.connect();
+  await world.app.ready;
+  delete world.hungaromet.answers['listing:wbex'];
+  await world.refresh(10);
+  await world.refresh(30);
+  assert.deepEqual(world.gladys.fake.sceneEvents, []);
+  await world.app.stop();
+});
+
+test('the check action waits for a cycle in progress instead of running beside it', async () => {
+  const world = await createWorld();
+  const [cycle, ack] = await Promise.all([
+    world.app.service.cycle(),
+    world.gladys.fake.action('check_connection', {}),
+  ]);
+  assert.equal(cycle, true);
+  assert.equal(ack.success, true);
+  const ready = world.logs.at('info').filter((line) => /^Ready:/.test(line.text));
+  assert.equal(ready.length, 2, 'the startup and the check, one setup each');
+  await world.app.stop();
+});

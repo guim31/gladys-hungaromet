@@ -262,7 +262,9 @@ const decode = (text) =>
     .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
     .trim();
 const tag = (xml, name) => {
-  const m = new RegExp(`<${name}(?:\\s+code="([^"]*)")?[^>]*>([\\s\\S]*?)</${name}>`).exec(xml);
+  const m = new RegExp(
+    `<${name}(?=[\\s>])(?:\\s+code="([^"]*)")?[^>]*>([\\s\\S]*?)</${name}>`,
+  ).exec(xml);
   return m ? { code: m[1] ?? null, text: decode(m[2]) } : null;
 };
 
