@@ -140,6 +140,7 @@ test('pace: observations and the 3-hour warning index every cycle, files only wh
   }
   assert.equal(world.hungaromet.count('observations'), 7);
   assert.equal(world.hungaromet.count('stations'), 1);
+  assert.equal(world.hungaromet.count('observationFile'), 1, 'the run before, at setup only');
   const listings = (product) =>
     world.hungaromet.requests.filter((r) => r.endpoint === 'listing' && r.product === product)
       .length;
@@ -147,8 +148,8 @@ test('pace: observations and the 3-hour warning index every cycle, files only wh
   assert.equal(listings('wbex'), 3, 'the outlook every 30 minutes');
   // Each warning file is downloaded once, it did not change.
   assert.equal(world.hungaromet.count('warning'), 4);
-  // About 28 small requests in this hour, 20 an hour after it.
-  assert.ok(world.hungaromet.requests.length <= 30, `${world.hungaromet.requests.length}`);
+  // About 30 small requests in this hour, 20 an hour after it.
+  assert.ok(world.hungaromet.requests.length <= 32, `${world.hungaromet.requests.length}`);
   await world.app.stop();
 });
 
@@ -309,6 +310,42 @@ test('Budapest: the 3-hour warnings of Budapest, the outlook of Pest county', as
   assert.equal(area.name, 'Alertes HungaroMet Budapest');
   assert.equal(world.gladys.fake.lastState(areaFeature(world, 'warning_today', 'c1')), 1);
   assert.equal(world.gladys.fake.lastState(areaFeature(world, 'warning_now', 'c1')), 0);
+  await world.app.stop();
+});
+
+/** Recorded observations without the rows of some stations. */
+const without = (world, ids) => () =>
+  zip(
+    'x.csv',
+    observationsAt(world.clock.now).replace(/^.*$/gm, (line) =>
+      ids.includes(line.split(';')[1]?.trim()) ? '' : line,
+    ),
+  );
+
+test('a station late in the latest file: still the nearest, its values kept', async () => {
+  const world = await createWorld({ connect: false });
+  // Pécs Egyetem is only in the file of the run before.
+  world.hungaromet.answers.observations = without(world, [STATION]);
+  await world.gladys.connect();
+  await world.app.ready;
+  assert.equal(world.gladys.fake.discoveredDevices[0].name, 'HungaroMet Pécs Egyetem');
+  await world.createAll();
+  assert.equal(world.gladys.fake.lastState(stationFeature(world, 'temperature')), 7.2);
+  // Still late at the next cycle: the last values stay, nothing new is sent.
+  const before = world.gladys.fake.states.length;
+  await world.refresh(10);
+  assert.equal(world.gladys.fake.states.length, before);
+  await world.app.stop();
+});
+
+test('a chosen station absent from both files is accepted while it is active', async () => {
+  const world = await createWorld({ connect: false, config: { station_id: '44165' } });
+  world.hungaromet.answers.observations = without(world, ['44165']);
+  world.hungaromet.answers.observationFile = { status: 404 };
+  await world.gladys.connect();
+  await world.app.ready;
+  assert.equal(world.gladys.fake.discoveredDevices[0].name, 'HungaroMet Budapest Újpest');
+  assert.deepEqual(world.gladys.fake.connectionStatus, { connected: true });
   await world.app.stop();
 });
 

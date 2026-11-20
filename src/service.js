@@ -22,7 +22,9 @@ import {
   findDistrict,
   hungarianDate,
   latestFileName,
+  mergeObservations,
   nearestStations,
+  observationFileNames,
   outlookForDay,
   parseObservations,
   parseStations,
@@ -90,7 +92,26 @@ export function createService({ gladys, client, store, logger, getConfig, now })
   }
 
   async function readObservations() {
-    observations = { byId: parseObservations(await client.observations()), at: now() };
+    const fresh = parseObservations(await client.observations());
+    observations = { byId: mergeObservations(observations?.byId, fresh), at: now() };
+  }
+
+  /**
+   * The first time, also read the file of the run before: the latest file
+   * lacks the stations whose data arrive late, and the nearest station must
+   * not depend on which ones were on time.
+   */
+  async function readPreviousObservations() {
+    try {
+      const names = observationFileNames(await client.observationListing());
+      const previous = names.at(-2);
+      if (previous) {
+        const older = parseObservations(await client.observationFile(previous));
+        observations.byId = mergeObservations(older, observations.byId);
+      }
+    } catch (err) {
+      logger.debug(`Previous observation file unavailable (${err.message})`);
+    }
   }
 
   /** Download the newest file of a product, unless it is the one already read. */
@@ -179,13 +200,24 @@ export function createService({ gladys, client, store, logger, getConfig, now })
       return target;
     }
     await loadMetadata();
+    const first = !observations;
     await readObservations();
+    if (first) {
+      await readPreviousObservations();
+    }
     let problem = config.stationIdInvalid ? 'stationIdInvalid' : null;
 
     let station = null;
     const reporting = reportingStations();
     if (config.stationId) {
-      station = reporting.find((candidate) => candidate.id === config.stationId) ?? null;
+      // A chosen station late in the files is still accepted, if it is active.
+      const active = metadata.stations.find(
+        (candidate) =>
+          candidate.id === config.stationId && candidate.until >= hungarianDate(now(), -3),
+      );
+      station =
+        reporting.find((candidate) => candidate.id === config.stationId) ??
+        (active ? { ...active } : null);
       problem = station ? problem : 'stationUnknown';
     } else if (place) {
       const [nearest] = nearestStations(reporting, place.lat, place.lon, 1);

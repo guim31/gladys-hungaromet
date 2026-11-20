@@ -12,7 +12,9 @@ import {
   hungarianDate,
   latestFileName,
   maxLevel,
+  mergeObservations,
   nearestStations,
+  observationFileNames,
   outlookForDay,
   parseObservations,
   parseStations,
@@ -101,6 +103,24 @@ test('a value older than 30 minutes is not reused, and no wind direction in a ca
   assert.equal(observation.values.temperature, undefined);
   assert.equal(observation.values.wind_speed, 0);
   assert.equal(observation.values.wind_direction, undefined);
+});
+
+test('observations merged: a station late in the newest file keeps its last reading', () => {
+  const older = parseObservations(FIXTURES.observations);
+  const newer = new Map([
+    ['44527', { ...older.get('44527'), time: older.get('44527').time + 600000 }],
+  ]);
+  const merged = mergeObservations(older, newer);
+  assert.equal(merged.size, older.size);
+  assert.equal(merged.get('44527').time, newer.get('44527').time);
+  // An older reading never replaces a newer one.
+  assert.equal(mergeObservations(newer, older).get('44527').time, newer.get('44527').time);
+  assert.deepEqual(
+    observationFileNames(
+      'a HABP_10M_SYNOP_20261120213805.csv.zip b HABP_10M_SYNOP_20261120212804.csv.zip HABP_10M_SYNOP_LATEST.csv.zip',
+    ),
+    ['HABP_10M_SYNOP_20261120212804.csv.zip', 'HABP_10M_SYNOP_20261120213805.csv.zip'],
+  );
 });
 
 test('nearest stations, by great-circle distance', () => {

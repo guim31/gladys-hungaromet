@@ -112,12 +112,19 @@ export function createFakeHungaroMet({ now = () => NOW } = {}) {
   const answers = {
     stations: () => FIXTURES.stations,
     observations: () => zip('HABP_10M_SYNOP_LATEST.csv', observationsAt(now())),
+    observationListing: () =>
+      listing(['HABP_10M_SYNOP_20261119184803.csv.zip', 'HABP_10M_SYNOP_20261119185804.csv.zip']),
+    // The run before: the same stations, 10 minutes older.
+    observationFile: () =>
+      zip('HABP_10M_SYNOP_20261119184803.csv', observationsAt(now() - 10 * 60 * 1000)),
   };
 
   function endpointOf(url) {
     const path = url.pathname;
     if (path.endsWith('/station_meta_auto.csv')) return { endpoint: 'stations' };
     if (path.endsWith('/HABP_10M_SYNOP_LATEST.csv.zip')) return { endpoint: 'observations' };
+    if (path.endsWith('/10_minutes/csv/')) return { endpoint: 'observationListing' };
+    if (/\/HABP_10M_SYNOP_\d{14}\.csv\.zip$/.test(path)) return { endpoint: 'observationFile' };
     const m = /\/weather\/warnings\/(w[a-e]ex)\/(.*)$/.exec(path);
     if (m) return { endpoint: m[2] === '' ? 'listing' : 'warning', product: m[1], file: m[2] };
     return { endpoint: null };

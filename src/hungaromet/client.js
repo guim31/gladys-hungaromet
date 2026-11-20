@@ -16,6 +16,7 @@ import { unzipFirst } from './zip.js';
 const BASE = 'https://odp.met.hu/weather';
 export const URLS = {
   stations: `${BASE}/weather_reports/synoptic/hungary/meta/station_meta_auto.csv`,
+  observationsDir: `${BASE}/weather_reports/synoptic/hungary/10_minutes/csv/`,
   observations: `${BASE}/weather_reports/synoptic/hungary/10_minutes/csv/HABP_10M_SYNOP_LATEST.csv.zip`,
   warnings: `${BASE}/warnings/`,
 };
@@ -81,6 +82,17 @@ export function createHungaroMetClient({
 
     /** Latest 10-minute observations of every station (CSV text). */
     observations: () => getZipped(URLS.observations),
+
+    /** Index page of the 10-minute files (HTML text). */
+    observationListing: async () => (await get(URLS.observationsDir)).toString('utf8'),
+
+    /** One dated 10-minute file (CSV text). */
+    observationFile: (name) => {
+      if (!/^HABP_10M_SYNOP_\d{14}\.csv\.zip$/.test(name)) {
+        throw new HungaroMetError(`unexpected observation file name ${name}`);
+      }
+      return getZipped(`${URLS.observationsDir}${name}`);
+    },
 
     /** Index page of a warning product (HTML text). */
     listing: async (product) => (await get(`${URLS.warnings}${product}/`)).toString('utf8'),

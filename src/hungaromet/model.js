@@ -229,6 +229,25 @@ export function nearestStations(stations, lat, lon, count) {
     .slice(0, count);
 }
 
+/** The dated 10-minute files of the index page, oldest first. */
+export const observationFileNames = (html) =>
+  [...new Set(String(html).match(/HABP_10M_SYNOP_\d{14}\.csv\.zip/g) ?? [])].sort();
+
+/**
+ * Merge a newer reading of the observations into what is known: a station
+ * missing from the newest file (its data arrive one run late, ~10 % of the
+ * stations at any time) keeps its last observation.
+ */
+export function mergeObservations(known, fresh) {
+  const merged = new Map(known ?? []);
+  for (const [id, observation] of fresh) {
+    if (!merged.has(id) || observation.time >= merged.get(id).time) {
+      merged.set(id, observation);
+    }
+  }
+  return merged;
+}
+
 /** The newest file of a product in its index page, or null. */
 export function latestFileName(html, product) {
   const pattern = new RegExp(`${product}\\d{8}_\\d{4}\\.xml\\.zip`, 'g');

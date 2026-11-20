@@ -27,12 +27,15 @@ test('the files of the portal, with a user agent and nothing personal', async ()
   assert.equal(seen[1].url, 'https://odp.met.hu/weather/warnings/waex/waex20261119_2025.xml.zip');
   await client.listing('wbex');
   assert.equal(seen[2].url, 'https://odp.met.hu/weather/warnings/wbex/');
+  await client.observationFile('HABP_10M_SYNOP_20261120213805.csv.zip');
+  assert.match(seen[3].url, /10_minutes\/csv\/HABP_10M_SYNOP_20261120213805\.csv\.zip$/);
 });
 
 test('a file name that is not a warning file is never requested', () => {
   const { fetch, seen } = answering('x');
   const client = createHungaroMetClient({ fetch });
   assert.throws(() => client.warningFile('waex', '../../etc/passwd'), /unexpected warning file/);
+  assert.throws(() => client.observationFile('../x.csv.zip'), /unexpected observation file/);
   assert.equal(seen.length, 0);
 });
 
