@@ -1,0 +1,18 @@
+StationNumber;StartDate; EndDate;Latitude;Longitude;Elevation;StationName                             ;RegioName             ;EOR
+        13704; 19950422;20040317; 47.6783;  16.6022;    232.8;Sopron Kuruc-domb                       ;Győr-Moson-Sopron     ;EOR
+        13704; 20050727;20261120; 47.6783;  16.6022;    232.8;Sopron Kuruc-domb                       ;Győr-Moson-Sopron     ;EOR
+        15310; 20020227;20261120; 47.1983;  16.6478;    200.1;Szombathely                             ;Vas                   ;EOR
+        23613; 20120901;20261120; 47.7061;  17.3622;    112.0;Győrsövényház                           ;Győr-Moson-Sopron     ;EOR
+        23703; 19960103;20261120; 47.7100;  17.6747;    115.7;Győr Likócs                             ;Győr-Moson-Sopron     ;EOR
+        36100; 19950502;20261120; 46.9108;  18.0408;    107.2;Siófok                                  ;Somogy                ;EOR
+        38305; 20120718;20261120; 46.2192;  18.6106;    154.0;Bátaapáti                               ;Tolna                 ;EOR
+        38317; 20130703;20261120; 46.2225;  18.6083;    144.0;Bátaapáti Vadászház                     ;Tolna                 ;EOR
+        38528; 20100201;20261120; 46.0778;  18.2072;    174.0;Pécs Egyetem                            ;Baranya               ;EOR
+        44165; 20010428;20261120; 47.5733;  19.0750;    104.8;Budapest Újpest                         ;Budapest IV.          ;EOR
+        44527; 19960104;20261120; 47.4292;  19.1822;    138.1;Budapest Pestszentlőrinc                ;Budapest XVIII.       ;EOR
+        52744; 20130627;20261120; 48.0947;  20.7267;    161.0;Miskolc Diósgyőr                        ;Borsod-Abaúj-Zemplén  ;EOR
+        53101; 19950514;20261120; 47.8722;  20.0128;   1010.8;Kékestető                               ;Heves                 ;EOR
+        58102; 19971208;20261120; 46.2472;  20.1406;    103.9;Szeged belterület                       ;Csongrád-Csanád       ;EOR
+        58116; 20191130;20261120; 46.2561;  20.0906;     81.0;Szeged külterület                       ;Csongrád-Csanád       ;EOR
+        64310; 20200130;20261120; 47.5767;  21.5825;    125.0;Debrecen Kismacs                        ;Hajdú-Bihar           ;EOR
+        64711; 20161015;20261120; 47.4844;  21.6056;    106.6;Debrecen repülőtér                      ;Hajdú-Bihar           ;EOR

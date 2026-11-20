@@ -30,6 +30,17 @@ Gladys before reporting a problem.
 
 In scope: the code of this repository and the Docker image it publishes.
 
+What the integration handles:
+
+- **No secret**: HungaroMet needs no account and no key, the configuration holds none.
+- **The position of a Gladys house** (the `location` permission of the manifest): read from Gladys
+  to find the nearest station and the county. It never leaves the container (HungaroMet serves
+  whole-country files) and is never written to the logs nor to `/data`.
+- **`/data/state.json`**: the warning area and the types and levels of the warnings already
+  announced to the scenes. Nothing personal.
+- **Network**: outbound HTTPS GET requests to `odp.met.hu`, nothing inbound. The ZIP files are
+  read in memory with a size cap.
+
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
 and the third-party services and devices the integration talks to.

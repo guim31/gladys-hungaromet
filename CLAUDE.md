@@ -32,15 +32,20 @@ pushing.
 
 ```
 index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
-src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
+src/app.js                        handlers, configuration actions (ActionFailure = red message), widget
+src/service.js                    target (station, area), sources and their pace, states, scene trigger
+src/poller.js                     the container's own refresh timer; the core's onPoll is a fallback
+src/devices.js                    the two devices (station, warnings) and their states
+src/widgets.js                    dashboard widget "weather"
+src/hungaromet/client.js          HTTP client of odp.met.hu (plain files, no key)
+src/hungaromet/model.js           parsers: stations, 10-minute CSV, warning XML, counties, districts
+src/hungaromet/zip.js             one-entry ZIP reader on node:zlib (no dependency)
+src/i18n.js                       every text, in en/fr/de/es
 src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
-gladys-assistant-integration.json manifest: name, config_schema, actions, image...
-docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
-test/                             node --test, against the SDK's fake Gladys (integration-sdk/testing)
+src/store.js, src/issues.js       /data/state.json (warnings announced), log-once of failures
+gladys-assistant-integration.json manifest: name, config_schema, actions, trigger, widget
+docs/{en,fr,de,es}.md             user documentation, re-hosted by Gladys (same sections)
+test/                             node --test, against the SDK's fake Gladys and recorded files
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
 
@@ -259,3 +264,29 @@ long, et sur un « Sie »/« Ihr… » de politesse en allemand. Le store exige 
 - Docs `en`, `fr`, `de`, `es` avec les mêmes sections.
 - Chauffe, ouverture, sécurité : ne rien rendre pilotable « comme un thermostat » ou par un assistant
   vocal quand une erreur serait dangereuse (leçon d'OctoPrint).
+
+## HungaroMet (odp.met.hu)
+
+- **Plain files behind an Apache index**, no API, no key, no published rate limit. The integration
+  reads ~20 small files an hour and never sends the house position (whole-country files).
+- **10-minute observations**: one zipped CSV for every station
+  (`.../10_minutes/csv/HABP_10M_SYNOP_LATEST.csv.zip`), semicolon-separated, cells padded with
+  spaces, `-999` for a missing value, time `YYYYMMDDHHmm` in **UTC**, wind in **m/s**, pressure at
+  **station level** (`p`), visibility in m. The file also repeats the corrections of the last 24 h:
+  a station can have several rows, and the newest row often lacks the rain (`r`) that the previous
+  run had. Hence: newest row per station, a missing value taken from a row at most 30 min older.
+  Some stations measure only radiation (Bátaapáti Vadászház): "reporting" means having a temperature.
+- **Metadata** (`station_meta_auto.csv`): one row per period of a station; keep the latest. The
+  `RegioName` is the county, or "Budapest XI." etc. for Budapest.
+- **Warnings**: `weather/warnings/<product>/`, one zipped XML per issue, the newest name read from
+  the index page (no LATEST file). `waex` = 3-hour warnings **by district** (code = county × 100 +
+  n, Budapest = 101), valid until the next issue (the gaps between issues reach hours); `wbex`,
+  `wcex`, `wdex` = outlook for today, tomorrow, the day after **by county** (codes 2 to 20, no
+  Budapest: it falls under Pest, 13), each with `<expires>YYYYMMDD</expires>`: choose the file of a
+  day by `expires` (a Hungarian day, Europe/Budapest), not by the product name. Event types by
+  letter `a`…`j`, level 1–3. The `ex` files are in English, `hx` in Hungarian.
+- **Terms of use**: free use, the source must be cited ("Database: Meteorological Database,
+  HungaroMet Nonprofit Zrt.", in the widget caption, the manifest and the docs), and warnings must
+  be passed on **unchanged**: the official text goes out as is, only the type/level labels are
+  translated.
+- The cover uses the official logo of the portal (`odp.met.hu/HungaroMet_logo_800x_ENG.png`).
