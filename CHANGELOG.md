@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-20
+
 ### Added
 
 - HungaroMet in Gladys: the official Hungarian weather, from open data, no account and no key.
@@ -23,3 +25,6 @@ the notes of the version's GitHub Release.
 - A dashboard widget with the readings and the warnings, each block can be hidden.
 - Two configuration actions: list the nearest stations, check the connection.
 - Texts and documentation in English, French, German and Spanish.
+
+[Unreleased]: https://github.com/guim31/gladys-hungaromet/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/guim31/gladys-hungaromet/releases/tag/v1.0.0
