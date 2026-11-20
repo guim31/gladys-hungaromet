@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet href="alert.xsl" type="text/xsl"?>
+<msg>
+<issued code="2026-11-19 20:25:33">2026-11-19 21:25 (20:25 UTC)</issued>
+<expires>20261119</expires>
+<sender>Hungarian Meteorological Service</sender>
+<status>actual</status>
+<msgType code="wb">severe weather forecast for today</msgType>
+<lang>en</lang>
+<identifier>wb20261119202533_SDV5</identifier>
+<note>Severe weather forecast for today</note>
+<leveloverone>no</leveloverone>
+<msgImages>
+<msgImg code="a" name="ts">wbma20261119_2025+ts.png</msgImg>
+<msgImg code="b" name="wind">wbmb20261119_2025+wind.png</msgImg>
+<msgImg code="c" name="rainstorm">wbmc20261119_2025+rainstorm.png</msgImg>
+<msgImg code="d" name="fzra">wbmd20261119_2025+fzra.png</msgImg>
+<msgImg code="e" name="snowdrift">wbme20261119_2025+snowdrift.png</msgImg>
+<msgImg code="f" name="rain">wbmf20261119_2025+rain.png</msgImg>
+<msgImg code="g" name="snow">wbmg20261119_2025+snow.png</msgImg>
+<msgImg code="h" name="fog">wbmh20261119_2025+fog.png</msgImg>
+<msgImg code="i" name="coldx">wbmi20261119_2025+coldx.png</msgImg>
+<msgImg code="j" name="hotx">wbmj20261119_2025+hotx.png</msgImg>
+<msgImg code="z" name="">wbmz20261119_2025.png</msgImg>
+</msgImages>
+<eventtypes>
+<eventtype code="a" name="ts">Thunderstorm</eventtype>
+<eventtype code="b" name="wind">Wind Gust</eventtype>
+<eventtype code="c" name="rainstorm">Torrential rain</eventtype>
+<eventtype code="d" name="fzra">Freezing rain</eventtype>
+<eventtype code="e" name="snowdrift">Blowing snow</eventtype>
+<eventtype code="f" name="rain">Rain</eventtype>
+<eventtype code="g" name="snow">Snowfall</eventtype>
+<eventtype code="h" name="fog">Dense fog</eventtype>
+<eventtype code="i" name="coldx">Low temperature</eventtype>
+<eventtype code="j" name="hotx">High temperature</eventtype>
+</eventtypes>
+<msgAreas>
+<msgArea code="3">Bács-Kiskun</msgArea>
+<msgArea code="2">Baranya</msgArea>
+<msgArea code="4">Békés</msgArea>
+<msgArea code="5">Borsod-Abaúj-Zemplén</msgArea>
+<msgArea code="6">Csongrád-Csanád</msgArea>
+<msgArea code="7">Fejér</msgArea>
+<msgArea code="8">Győr-Moson-Sopron</msgArea>
+<msgArea code="9">Hajdú-Bihar</msgArea>
+<msgArea code="10">Heves</msgArea>
+<msgArea code="16">Jász-Nagykun-Szolnok</msgArea>
+<msgArea code="11">Komárom-Esztergom</msgArea>
+<msgArea code="12">Nógrád</msgArea>
+<msgArea code="13">Pest</msgArea>
+<msgArea code="14">Somogy</msgArea>
+<msgArea code="15">Szabolcs-Szatmár-Bereg</msgArea>
+<msgArea code="17">Tolna</msgArea>
+<msgArea code="18">Vas</msgArea>
+<msgArea code="19">Veszprém</msgArea>
+<msgArea code="20">Zala</msgArea>
+</msgAreas>
+
+<area>
+<areadesc code="2">Baranya</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="3">Bács-Kiskun</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="4">Békés</areadesc>
+<info>
+<event code="a">Thunderstorm</event>
+<level code="1">1</level>
+<description>Attention! Thunderstorm (lightning) is expected, possibly accompanied by stormy gusts and hail.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="6">Csongrád-Csanád</areadesc>
+<info>
+<event code="a">Thunderstorm</event>
+<level code="1">1</level>
+<description>Attention! Thunderstorm (lightning) is expected, possibly accompanied by stormy gusts and hail.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="9">Hajdú-Bihar</areadesc>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="14">Somogy</areadesc>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="16">Jász-Nagykun-Szolnok</areadesc>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="17">Tolna</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area>
+<area>
+<areadesc code="20">Zala</areadesc>
+<info>
+<event code="f">Rain</event>
+<level code="1">1</level>
+<description>20 mm precipitation can be expected in 24 hours.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/figyelmezteto_elorejelzes_mara/</web>
+</info>
+</area></msg>

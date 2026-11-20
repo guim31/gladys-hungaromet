@@ -1,177 +1,851 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "HungaroMet",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Hungarian weather from HungaroMet open data: station readings and official warnings.",
+    "fr": "Météo hongroise des données ouvertes HungaroMet : mesures des stations et alertes officielles.",
+    "de": "Ungarisches Wetter aus offenen Daten von HungaroMet: Stationswerte und amtliche Warnungen.",
+    "es": "Tiempo de Hungría con los datos abiertos de HungaroMet: estaciones y alertas oficiales."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
-  "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "docker_image": "ghcr.io/guim31/gladys-hungaromet:1.0.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-hungaromet/main/cover.png",
+  "categories": ["environment"],
+  "countries": ["HU"],
+  "transports": ["cloud"],
+  "location": true,
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "HungaroMet",
+        "fr": "HungaroMet",
+        "de": "HungaroMet",
+        "es": "HungaroMet"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Open data of HungaroMet, the Hungarian Meteorological Service: no account, no key. By default, the integration uses the position of your first Gladys house: the nearest weather station and the warnings of its county. Database: Meteorological Database, HungaroMet Nonprofit Zrt. Not affiliated with HungaroMet.",
+        "fr": "Données ouvertes de HungaroMet, le service météorologique hongrois : ni compte, ni clé. Par défaut, l'intégration prend la position de votre première maison Gladys : la station météo la plus proche et les alertes de son comitat. Base de données : Meteorological Database, HungaroMet Nonprofit Zrt. Sans lien avec HungaroMet.",
+        "de": "Offene Daten von HungaroMet, dem ungarischen Wetterdienst: kein Konto, kein Schlüssel. Standardmäßig nutzt die Integration die Position deines ersten Gladys-Zuhauses: die nächste Wetterstation und die Warnungen ihres Komitats. Datenbank: Meteorological Database, HungaroMet Nonprofit Zrt. Keine Verbindung zu HungaroMet.",
+        "es": "Datos abiertos de HungaroMet, el servicio meteorológico de Hungría: sin cuenta ni clave. Por defecto, la integración usa la posición de su primera casa de Gladys: la estación más cercana y las alertas de su condado. Base de datos: Meteorological Database, HungaroMet Nonprofit Zrt. Sin relación con HungaroMet."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://odp.met.hu/",
+          "label": {
+            "en": "HungaroMet open data portal",
+            "fr": "Portail de données ouvertes HungaroMet",
+            "de": "Offenes Datenportal von HungaroMet",
+            "es": "Portal de datos abiertos de HungaroMet"
+          }
+        },
+        {
+          "url": "https://www.met.hu/en/idojaras/veszelyjelzes/",
+          "label": {
+            "en": "HungaroMet warnings",
+            "fr": "Alertes HungaroMet",
+            "de": "HungaroMet-Warnungen",
+            "es": "Alertas de HungaroMet"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "key": "house",
+      "type": "select",
+      "source": "houses",
+      "label": {
+        "en": "House",
+        "fr": "Maison",
+        "de": "Zuhause",
+        "es": "Casa"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
+      "description": {
+        "en": "The house whose position is used. Empty: the first house with a position.",
+        "fr": "La maison dont la position est utilisée. Vide : la première maison qui a une position.",
+        "de": "Das Zuhause, dessen Position genutzt wird. Leer: das erste Zuhause mit Position.",
+        "es": "La casa cuya posición se usa. Vacío: la primera casa con posición."
+      },
+      "required": false
+    },
+    {
+      "key": "latitude",
+      "type": "string",
+      "label": {
+        "en": "Latitude (optional)",
+        "fr": "Latitude (facultatif)",
+        "de": "Breitengrad (optional)",
+        "es": "Latitud (opcional)"
+      },
+      "description": {
+        "en": "To use another place than a house. Takes precedence over the house.",
+        "fr": "Pour un autre lieu qu'une maison. Prioritaire sur la maison.",
+        "de": "Für einen anderen Ort als ein Zuhause. Hat Vorrang vor dem Zuhause.",
+        "es": "Para otro lugar que una casa. Tiene prioridad sobre la casa."
+      },
+      "placeholder": {
+        "en": "e.g. 47.50",
+        "fr": "ex. 47,50",
+        "de": "z. B. 47,50",
+        "es": "p. ej. 47,50"
+      },
+      "required": false,
+      "default": ""
     },
     {
       "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
-      "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+      "type": "string",
+      "label": {
+        "en": "Longitude (optional)",
+        "fr": "Longitude (facultatif)",
+        "de": "Längengrad (optional)",
+        "es": "Longitud (opcional)"
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
+      "placeholder": {
+        "en": "e.g. 19.04",
+        "fr": "ex. 19,04",
+        "de": "z. B. 19,04",
+        "es": "p. ej. 19,04"
+      },
+      "required": false,
+      "default": ""
     },
     {
-      "key": "unit",
-      "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
+      "key": "station_id",
+      "type": "string",
+      "label": {
+        "en": "Weather station (optional)",
+        "fr": "Station météo (facultatif)",
+        "de": "Wetterstation (optional)",
+        "es": "Estación meteorológica (opcional)"
+      },
+      "description": {
+        "en": "Number of a HungaroMet station. Empty: the nearest one. The action below lists them.",
+        "fr": "Numéro d'une station HungaroMet. Vide : la plus proche. L'action ci-dessous les liste.",
+        "de": "Nummer einer HungaroMet-Station. Leer: die nächste. Die Aktion unten listet sie auf.",
+        "es": "Número de una estación de HungaroMet. Vacío: la más cercana. La acción de abajo las lista."
+      },
+      "placeholder": {
+        "en": "e.g. 44527",
+        "fr": "ex. 44527",
+        "de": "z. B. 44527",
+        "es": "p. ej. 44527"
+      },
       "required": false,
-      "default": "celsius",
+      "default": ""
+    },
+    {
+      "key": "county",
+      "type": "select",
+      "label": {
+        "en": "County of the warnings (optional)",
+        "fr": "Comitat des alertes (facultatif)",
+        "de": "Komitat der Warnungen (optional)",
+        "es": "Condado de las alertas (opcional)"
+      },
+      "description": {
+        "en": "Empty: the county of the place. Budapest takes the outlook of Pest county.",
+        "fr": "Vide : le comitat du lieu. Budapest reprend la vigilance du comitat de Pest.",
+        "de": "Leer: das Komitat des Orts. Budapest übernimmt die Vorschau des Komitats Pest.",
+        "es": "Vacío: el condado del lugar. Budapest toma la previsión del condado de Pest."
+      },
+      "required": false,
       "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+        {
+          "value": "1",
+          "label": {
+            "en": "Budapest",
+            "fr": "Budapest",
+            "de": "Budapest",
+            "es": "Budapest"
+          }
+        },
+        {
+          "value": "2",
+          "label": {
+            "en": "Baranya",
+            "fr": "Baranya",
+            "de": "Baranya",
+            "es": "Baranya"
+          }
+        },
+        {
+          "value": "3",
+          "label": {
+            "en": "Bács-Kiskun",
+            "fr": "Bács-Kiskun",
+            "de": "Bács-Kiskun",
+            "es": "Bács-Kiskun"
+          }
+        },
+        {
+          "value": "4",
+          "label": {
+            "en": "Békés",
+            "fr": "Békés",
+            "de": "Békés",
+            "es": "Békés"
+          }
+        },
+        {
+          "value": "5",
+          "label": {
+            "en": "Borsod-Abaúj-Zemplén",
+            "fr": "Borsod-Abaúj-Zemplén",
+            "de": "Borsod-Abaúj-Zemplén",
+            "es": "Borsod-Abaúj-Zemplén"
+          }
+        },
+        {
+          "value": "6",
+          "label": {
+            "en": "Csongrád-Csanád",
+            "fr": "Csongrád-Csanád",
+            "de": "Csongrád-Csanád",
+            "es": "Csongrád-Csanád"
+          }
+        },
+        {
+          "value": "7",
+          "label": {
+            "en": "Fejér",
+            "fr": "Fejér",
+            "de": "Fejér",
+            "es": "Fejér"
+          }
+        },
+        {
+          "value": "8",
+          "label": {
+            "en": "Győr-Moson-Sopron",
+            "fr": "Győr-Moson-Sopron",
+            "de": "Győr-Moson-Sopron",
+            "es": "Győr-Moson-Sopron"
+          }
+        },
+        {
+          "value": "9",
+          "label": {
+            "en": "Hajdú-Bihar",
+            "fr": "Hajdú-Bihar",
+            "de": "Hajdú-Bihar",
+            "es": "Hajdú-Bihar"
+          }
+        },
+        {
+          "value": "10",
+          "label": {
+            "en": "Heves",
+            "fr": "Heves",
+            "de": "Heves",
+            "es": "Heves"
+          }
+        },
+        {
+          "value": "11",
+          "label": {
+            "en": "Komárom-Esztergom",
+            "fr": "Komárom-Esztergom",
+            "de": "Komárom-Esztergom",
+            "es": "Komárom-Esztergom"
+          }
+        },
+        {
+          "value": "12",
+          "label": {
+            "en": "Nógrád",
+            "fr": "Nógrád",
+            "de": "Nógrád",
+            "es": "Nógrád"
+          }
+        },
+        {
+          "value": "13",
+          "label": {
+            "en": "Pest",
+            "fr": "Pest",
+            "de": "Pest",
+            "es": "Pest"
+          }
+        },
+        {
+          "value": "14",
+          "label": {
+            "en": "Somogy",
+            "fr": "Somogy",
+            "de": "Somogy",
+            "es": "Somogy"
+          }
+        },
+        {
+          "value": "15",
+          "label": {
+            "en": "Szabolcs-Szatmár-Bereg",
+            "fr": "Szabolcs-Szatmár-Bereg",
+            "de": "Szabolcs-Szatmár-Bereg",
+            "es": "Szabolcs-Szatmár-Bereg"
+          }
+        },
+        {
+          "value": "16",
+          "label": {
+            "en": "Jász-Nagykun-Szolnok",
+            "fr": "Jász-Nagykun-Szolnok",
+            "de": "Jász-Nagykun-Szolnok",
+            "es": "Jász-Nagykun-Szolnok"
+          }
+        },
+        {
+          "value": "17",
+          "label": {
+            "en": "Tolna",
+            "fr": "Tolna",
+            "de": "Tolna",
+            "es": "Tolna"
+          }
+        },
+        {
+          "value": "18",
+          "label": {
+            "en": "Vas",
+            "fr": "Vas",
+            "de": "Vas",
+            "es": "Vas"
+          }
+        },
+        {
+          "value": "19",
+          "label": {
+            "en": "Veszprém",
+            "fr": "Veszprém",
+            "de": "Veszprém",
+            "es": "Veszprém"
+          }
+        },
+        {
+          "value": "20",
+          "label": {
+            "en": "Zala",
+            "fr": "Zala",
+            "de": "Zala",
+            "es": "Zala"
+          }
+        }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "district",
+      "type": "string",
+      "label": {
+        "en": "District of the 3-hour warnings (optional)",
+        "fr": "District des alertes à 3 heures (facultatif)",
+        "de": "Kreis der 3-Stunden-Warnungen (optional)",
+        "es": "Distrito de las alertas a 3 horas (opcional)"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Name or code of a district (járás). Empty: the whole county. The connection check lists them.",
+        "fr": "Nom ou code d'un district (járás). Vide : tout le comitat. Le test de connexion les liste.",
+        "de": "Name oder Code eines Kreises (járás). Leer: das ganze Komitat. Die Verbindungsprüfung listet sie auf.",
+        "es": "Nombre o código de un distrito (járás). Vacío: todo el condado. La comprobación de conexión los lista."
+      },
+      "placeholder": {
+        "en": "e.g. Pécsi or 204",
+        "fr": "ex. Pécsi ou 204",
+        "de": "z. B. Pécsi oder 204",
+        "es": "p. ej. Pécsi o 204"
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": ""
+    },
+    {
+      "key": "refresh_minutes",
+      "type": "select",
+      "label": {
+        "en": "Refresh interval",
+        "fr": "Fréquence de rafraîchissement",
+        "de": "Aktualisierungsintervall",
+        "es": "Intervalo de actualización"
+      },
+      "description": {
+        "en": "The stations report every 10 minutes.",
+        "fr": "Les stations publient toutes les 10 minutes.",
+        "de": "Die Stationen melden alle 10 Minuten.",
+        "es": "Las estaciones publican cada 10 minutos."
+      },
+      "required": false,
+      "default": "10",
+      "options": [
+        {
+          "value": "10",
+          "label": {
+            "en": "10 minutes",
+            "fr": "10 minutes",
+            "de": "10 Minuten",
+            "es": "10 minutos"
+          }
+        },
+        {
+          "value": "20",
+          "label": {
+            "en": "20 minutes",
+            "fr": "20 minutes",
+            "de": "20 Minuten",
+            "es": "20 minutos"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "en": "30 minutes",
+            "fr": "30 minutes",
+            "de": "30 Minuten",
+            "es": "30 minutos"
+          }
+        },
+        {
+          "value": "60",
+          "label": {
+            "en": "60 minutes",
+            "fr": "60 minutes",
+            "de": "60 Minuten",
+            "es": "60 minutos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the feature names",
+        "fr": "Langue des noms de fonctionnalités",
+        "de": "Sprache der Funktionsnamen",
+        "es": "Idioma de los nombres de funciones"
+      },
+      "description": {
+        "en": "Used when the devices are created, and for the scene event texts.",
+        "fr": "Utilisée à la création des appareils, et pour les textes des événements de scène.",
+        "de": "Wird beim Anlegen der Geräte und für die Texte der Szenen-Ereignisse genutzt.",
+        "es": "Se usa al crear los dispositivos y para los textos de los eventos de escena."
+      },
+      "required": false,
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
+      "key": "list_stations",
+      "label": {
+        "en": "List the nearest stations",
+        "fr": "Lister les stations proches",
+        "de": "Nächste Stationen anzeigen",
+        "es": "Listar las estaciones cercanas"
+      },
       "timeout_seconds": 30
     },
     {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ]
+      "key": "check_connection",
+      "label": {
+        "en": "Check the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung prüfen",
+        "es": "Comprobar la conexión"
+      },
+      "timeout_seconds": 60
     }
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
+      "key": "warning_issued",
+      "label": {
+        "en": "New HungaroMet warning",
+        "fr": "Nouvelle alerte HungaroMet",
+        "de": "Neue HungaroMet-Warnung",
+        "es": "Nueva alerta de HungaroMet"
+      },
       "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+        "en": "HungaroMet issued a warning for the area (next 3 hours, today or tomorrow), or raised its level.",
+        "fr": "HungaroMet a émis une alerte pour la zone (3 prochaines heures, aujourd'hui ou demain), ou en a relevé le niveau.",
+        "de": "HungaroMet hat eine Warnung für das Gebiet ausgegeben (nächste 3 Stunden, heute oder morgen) oder ihre Stufe erhöht.",
+        "es": "HungaroMet ha emitido una alerta para la zona (próximas 3 horas, hoy o mañana), o ha subido su nivel."
       },
       "fields": [
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
+          "key": "warning_type",
+          "type": "multi_select",
+          "label": {
+            "en": "Warning types",
+            "fr": "Types d'alerte",
+            "de": "Warnarten",
+            "es": "Tipos de alerta"
+          },
+          "options": [
+            {
+              "value": "thunderstorm",
+              "label": {
+                "en": "Thunderstorm",
+                "fr": "Orage",
+                "de": "Gewitter",
+                "es": "Tormenta"
+              }
+            },
+            {
+              "value": "wind",
+              "label": {
+                "en": "Wind gusts",
+                "fr": "Rafales",
+                "de": "Sturmböen",
+                "es": "Rachas de viento"
+              }
+            },
+            {
+              "value": "torrential_rain",
+              "label": {
+                "en": "Torrential rain",
+                "fr": "Pluie torrentielle",
+                "de": "Starkregen",
+                "es": "Lluvia torrencial"
+              }
+            },
+            {
+              "value": "freezing_rain",
+              "label": {
+                "en": "Freezing rain",
+                "fr": "Pluie verglaçante",
+                "de": "Glatteisregen",
+                "es": "Lluvia helada"
+              }
+            },
+            {
+              "value": "blowing_snow",
+              "label": {
+                "en": "Blowing snow",
+                "fr": "Congères",
+                "de": "Schneeverwehungen",
+                "es": "Ventisca"
+              }
+            },
+            {
+              "value": "rain",
+              "label": {
+                "en": "Rain",
+                "fr": "Pluie",
+                "de": "Dauerregen",
+                "es": "Lluvia"
+              }
+            },
+            {
+              "value": "snow",
+              "label": {
+                "en": "Snowfall",
+                "fr": "Neige",
+                "de": "Schneefall",
+                "es": "Nevada"
+              }
+            },
+            {
+              "value": "fog",
+              "label": {
+                "en": "Dense fog",
+                "fr": "Brouillard dense",
+                "de": "Dichter Nebel",
+                "es": "Niebla densa"
+              }
+            },
+            {
+              "value": "cold",
+              "label": {
+                "en": "Extreme cold",
+                "fr": "Grand froid",
+                "de": "Strenge Kälte",
+                "es": "Frío extremo"
+              }
+            },
+            {
+              "value": "heat",
+              "label": {
+                "en": "Heat",
+                "fr": "Canicule",
+                "de": "Hitze",
+                "es": "Calor"
+              }
+            }
+          ]
         },
         {
-          "key": "target",
+          "key": "level",
           "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
+          "label": {
+            "en": "Levels",
+            "fr": "Niveaux",
+            "de": "Stufen",
+            "es": "Niveles"
+          },
           "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
+            {
+              "value": "yellow",
+              "label": {
+                "en": "Yellow",
+                "fr": "Jaune",
+                "de": "Gelb",
+                "es": "Amarilla"
+              }
+            },
+            {
+              "value": "orange",
+              "label": {
+                "en": "Orange",
+                "fr": "Orange",
+                "de": "Orange",
+                "es": "Naranja"
+              }
+            },
+            {
+              "value": "red",
+              "label": {
+                "en": "Red",
+                "fr": "Rouge",
+                "de": "Rot",
+                "es": "Roja"
+              }
+            }
+          ]
+        },
+        {
+          "key": "horizon",
+          "type": "multi_select",
+          "label": {
+            "en": "When",
+            "fr": "Échéance",
+            "de": "Zeitraum",
+            "es": "Cuándo"
+          },
+          "options": [
+            {
+              "value": "now",
+              "label": {
+                "en": "Next 3 hours",
+                "fr": "3 prochaines heures",
+                "de": "Nächste 3 Stunden",
+                "es": "Próximas 3 horas"
+              }
+            },
+            {
+              "value": "today",
+              "label": {
+                "en": "Today",
+                "fr": "Aujourd'hui",
+                "de": "Heute",
+                "es": "Hoy"
+              }
+            },
+            {
+              "value": "tomorrow",
+              "label": {
+                "en": "Tomorrow",
+                "fr": "Demain",
+                "de": "Morgen",
+                "es": "Mañana"
+              }
+            }
           ]
         }
       ],
       "variables": [
         {
-          "key": "target",
+          "key": "type_label",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
-        }
-      ]
-    }
-  ],
-  "scene_actions": [
-    {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
-      },
-      "timeout_seconds": 15,
-      "fields": [
+          "label": {
+            "en": "Warning type",
+            "fr": "Type d'alerte",
+            "de": "Warnart",
+            "es": "Tipo de alerta"
+          }
+        },
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ],
-      "outputs": [
+          "key": "level_label",
+          "type": "string",
+          "label": {
+            "en": "Level",
+            "fr": "Niveau",
+            "de": "Stufe",
+            "es": "Nivel"
+          }
+        },
         {
-          "key": "signalled",
+          "key": "horizon_label",
+          "type": "string",
+          "label": {
+            "en": "When",
+            "fr": "Échéance",
+            "de": "Zeitraum",
+            "es": "Cuándo"
+          }
+        },
+        {
+          "key": "level_number",
+          "type": "number",
+          "label": {
+            "en": "Level (1 to 3)",
+            "fr": "Niveau (1 à 3)",
+            "de": "Stufe (1 bis 3)",
+            "es": "Nivel (1 a 3)"
+          }
+        },
+        {
+          "key": "warning_type",
+          "type": "string",
+          "label": {
+            "en": "Type key (wind, rain…)",
+            "fr": "Clé du type (wind, rain…)",
+            "de": "Typschlüssel (wind, rain…)",
+            "es": "Clave del tipo (wind, rain…)"
+          }
+        },
+        {
+          "key": "level",
+          "type": "string",
+          "label": {
+            "en": "Level key (yellow…)",
+            "fr": "Clé du niveau (yellow…)",
+            "de": "Stufenschlüssel (yellow…)",
+            "es": "Clave del nivel (yellow…)"
+          }
+        },
+        {
+          "key": "horizon",
+          "type": "string",
+          "label": {
+            "en": "When key (now, today, tomorrow)",
+            "fr": "Clé d'échéance (now, today, tomorrow)",
+            "de": "Zeitraumschlüssel (now, today, tomorrow)",
+            "es": "Clave de cuándo (now, today, tomorrow)"
+          }
+        },
+        {
+          "key": "is_update",
           "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "label": {
+            "en": "Level raised",
+            "fr": "Niveau relevé",
+            "de": "Stufe erhöht",
+            "es": "Nivel subido"
+          }
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "label": {
+            "en": "Official text (English)",
+            "fr": "Texte officiel (anglais)",
+            "de": "Amtlicher Text (Englisch)",
+            "es": "Texto oficial (inglés)"
+          }
+        },
+        {
+          "key": "area",
+          "type": "string",
+          "label": {
+            "en": "District or county",
+            "fr": "District ou comitat",
+            "de": "Kreis oder Komitat",
+            "es": "Distrito o condado"
+          }
         }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "weather",
+      "label": {
+        "en": "HungaroMet weather",
+        "fr": "Météo HungaroMet",
+        "de": "HungaroMet-Wetter",
+        "es": "Tiempo HungaroMet"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "Station readings and official warnings: next 3 hours, today and tomorrow.",
+        "fr": "Mesures de la station et alertes officielles : 3 prochaines heures, aujourd'hui et demain.",
+        "de": "Messwerte der Station und amtliche Warnungen: nächste 3 Stunden, heute und morgen.",
+        "es": "Datos de la estación y alertas oficiales: próximas 3 horas, hoy y mañana."
+      },
+      "icon": "cloud",
+      "settings": [
+        {
+          "key": "blocks",
+          "type": "multi_select",
+          "label": {
+            "en": "Blocks shown",
+            "fr": "Blocs affichés",
+            "de": "Angezeigte Blöcke",
+            "es": "Bloques mostrados"
+          },
+          "required": false,
+          "default": ["readings", "warnings"],
+          "options": [
+            {
+              "value": "readings",
+              "label": {
+                "en": "Station readings",
+                "fr": "Mesures de la station",
+                "de": "Messwerte der Station",
+                "es": "Datos de la estación"
+              }
+            },
+            {
+              "value": "warnings",
+              "label": {
+                "en": "Warnings",
+                "fr": "Alertes",
+                "de": "Warnungen",
+                "es": "Alertas"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

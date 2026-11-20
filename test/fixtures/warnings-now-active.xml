@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet href="alert.xsl" type="text/xsl"?>
+<msg>
+<issued code="2026-11-19 20:25:12">2026-11-19 21:25 (20:25 UTC)</issued>
+<expires>for the next 3 hours</expires>
+<sender>Hungarian Meteorological Service</sender>
+<status>actual</status>
+<msgType code="wa">weather warnings</msgType>
+<lang>en</lang>
+<identifier>wa20261119202512_SDV5</identifier>
+<note>Current weather warnings for the next 3 hours</note>
+<leveloverone>no</leveloverone>
+<msgImages>
+<msgImg code="a" name="ts">wama20261119_2025+ts.png</msgImg>
+<msgImg code="b" name="wind">wamb20261119_2025+wind.png</msgImg>
+<msgImg code="c" name="rainstorm">wamc20261119_2025+rainstorm.png</msgImg>
+<msgImg code="d" name="fzra">wamd20261119_2025+fzra.png</msgImg>
+<msgImg code="e" name="snowdrift">wame20261119_2025+snowdrift.png</msgImg>
+<msgImg code="z" name="">wamz20261119_2025.png</msgImg>
+</msgImages>
+<eventtypes>
+<eventtype code="a" name="ts">Thunderstorm</eventtype>
+<eventtype code="b" name="wind">Wind Gust</eventtype>
+<eventtype code="c" name="rainstorm">Torrential rain</eventtype>
+<eventtype code="d" name="fzra">Freezing rain</eventtype>
+<eventtype code="e" name="snowdrift">Blowing snow</eventtype>
+</eventtypes>
+<msgAreas>
+<msgArea code="101">Budapest</msgArea>
+<msgArea code="201">Bólyi</msgArea>
+<msgArea code="202">Komlói</msgArea>
+<msgArea code="203">Mohácsi</msgArea>
+<msgArea code="204">Pécsi</msgArea>
+<msgArea code="205">Pécsváradi</msgArea>
+<msgArea code="206">Hegyháti</msgArea>
+<msgArea code="207">Sellyei</msgArea>
+<msgArea code="208">Siklósi</msgArea>
+<msgArea code="209">Szentlőrinci</msgArea>
+<msgArea code="210">Szigetvári</msgArea>
+<msgArea code="301">Bajai</msgArea>
+<msgArea code="302">Bácsalmási</msgArea>
+<msgArea code="303">Jánoshalmai</msgArea>
+<msgArea code="304">Kalocsai</msgArea>
+<msgArea code="305">Kecskeméti</msgArea>
+<msgArea code="306">Kiskőrösi</msgArea>
+<msgArea code="307">Kiskunfélegyházi</msgArea>
+<msgArea code="308">Kiskunhalasi</msgArea>
+<msgArea code="309">Kiskunmajsai</msgArea>
+<msgArea code="310">Kunszentmiklósi</msgArea>
+<msgArea code="311">Tiszakécskei</msgArea>
+<msgArea code="401">Békési</msgArea>
+<msgArea code="402">Békéscsabai</msgArea>
+<msgArea code="403">Gyomaendrődi</msgArea>
+<msgArea code="404">Gyulai</msgArea>
+<msgArea code="405">Mezőkovácsházai</msgArea>
+<msgArea code="406">Orosházi</msgArea>
+<msgArea code="407">Sarkadi</msgArea>
+<msgArea code="408">Szarvasi</msgArea>
+<msgArea code="409">Szeghalmi</msgArea>
+<msgArea code="501">Cigándi</msgArea>
+<msgArea code="502">Edelényi</msgArea>
+<msgArea code="503">Encsi</msgArea>
+<msgArea code="504">Gönci</msgArea>
+<msgArea code="505">Kazincbarcikai</msgArea>
+<msgArea code="506">Mezőcsáti</msgArea>
+<msgArea code="507">Mezőkövesdi</msgArea>
+<msgArea code="508">Miskolci</msgArea>
+<msgArea code="509">Ózdi</msgArea>
+<msgArea code="510">Putnoki</msgArea>
+<msgArea code="511">Sárospataki</msgArea>
+<msgArea code="512">Sátoraljaújhelyi</msgArea>
+<msgArea code="513">Szerencsi</msgArea>
+<msgArea code="514">Szikszói</msgArea>
+<msgArea code="515">Tiszaújvárosi</msgArea>
+<msgArea code="516">Tokaji</msgArea>
+<msgArea code="601">Csongrádi</msgArea>
+<msgArea code="602">Hódmezővásárhelyi</msgArea>
+<msgArea code="603">Kisteleki</msgArea>
+<msgArea code="604">Makói</msgArea>
+<msgArea code="605">Mórahalmi</msgArea>
+<msgArea code="606">Szegedi</msgArea>
+<msgArea code="607">Szentesi</msgArea>
+<msgArea code="701">Bicskei</msgArea>
+<msgArea code="702">Dunaújvárosi</msgArea>
+<msgArea code="703">Enyingi</msgArea>
+<msgArea code="704">Gárdonyi</msgArea>
+<msgArea code="705">Martonvásári</msgArea>
+<msgArea code="706">Móri</msgArea>
+<msgArea code="708">Sárbogárdi</msgArea>
+<msgArea code="709">Székesfehérvári</msgArea>
+<msgArea code="801">Csornai</msgArea>
+<msgArea code="802">Győri</msgArea>
+<msgArea code="803">Kapuvári</msgArea>
+<msgArea code="804">Mosonmagyaróvári</msgArea>
+<msgArea code="805">Pannonhalmi</msgArea>
+<msgArea code="806">Soproni</msgArea>
+<msgArea code="807">Téti</msgArea>
+<msgArea code="901">Balmazújvárosi</msgArea>
+<msgArea code="902">Berettyóújfalui</msgArea>
+<msgArea code="903">Debreceni</msgArea>
+<msgArea code="904">Derecskei</msgArea>
+<msgArea code="905">Hajdúböszörményi</msgArea>
+<msgArea code="906">Hajdúhadházi</msgArea>
+<msgArea code="907">Hajdúnánási</msgArea>
+<msgArea code="908">Hajdúszoboszlói</msgArea>
+<msgArea code="909">Nyíradonyi</msgArea>
+<msgArea code="910">Püspökladányi</msgArea>
+<msgArea code="1001">Bélapátfalvai</msgArea>
+<msgArea code="1002">Egri</msgArea>
+<msgArea code="1003">Füzesabonyi</msgArea>
+<msgArea code="1004">Gyöngyösi</msgArea>
+<msgArea code="1005">Hatvani</msgArea>
+<msgArea code="1006">Hevesi</msgArea>
+<msgArea code="1007">Pétervásárai</msgArea>
+<msgArea code="1101">Esztergomi</msgArea>
+<msgArea code="1102">Kisbéri</msgArea>
+<msgArea code="1103">Komáromi</msgArea>
+<msgArea code="1104">Oroszlányi</msgArea>
+<msgArea code="1105">Tatai</msgArea>
+<msgArea code="1106">Tatabányai</msgArea>
+<msgArea code="1201">Balassagyarmati</msgArea>
+<msgArea code="1202">Bátonyterenyei</msgArea>
+<msgArea code="1203">Pásztói</msgArea>
+<msgArea code="1204">Rétsági</msgArea>
+<msgArea code="1205">Salgótarjáni</msgArea>
+<msgArea code="1206">Szécsényi</msgArea>
+<msgArea code="1301">Aszódi</msgArea>
+<msgArea code="1302">Budakeszi</msgArea>
+<msgArea code="1303">Ceglédi</msgArea>
+<msgArea code="1304">Dabasi</msgArea>
+<msgArea code="1305">Dunakeszi</msgArea>
+<msgArea code="1306">Érdi</msgArea>
+<msgArea code="1307">Gödöllői</msgArea>
+<msgArea code="1308">Gyáli</msgArea>
+<msgArea code="1309">Monori</msgArea>
+<msgArea code="1310">Nagykátai</msgArea>
+<msgArea code="1311">Nagykőrösi</msgArea>
+<msgArea code="1312">Pilisvörösvári</msgArea>
+<msgArea code="1313">Ráckevei</msgArea>
+<msgArea code="1314">Szentendrei</msgArea>
+<msgArea code="1315">Szigetszentmiklósi</msgArea>
+<msgArea code="1316">Szobi</msgArea>
+<msgArea code="1317">Váci</msgArea>
+<msgArea code="1318">Vecsési</msgArea>
+<msgArea code="1401">Barcsi</msgArea>
+<msgArea code="1402">Csurgói</msgArea>
+<msgArea code="1403">Fonyódi</msgArea>
+<msgArea code="1404">Kaposvári</msgArea>
+<msgArea code="1405">Marcali</msgArea>
+<msgArea code="1406">Nagyatádi</msgArea>
+<msgArea code="1407">Siófoki</msgArea>
+<msgArea code="1408">Tabi</msgArea>
+<msgArea code="1501">Baktalórántházai</msgArea>
+<msgArea code="1502">Csengeri</msgArea>
+<msgArea code="1503">Fehérgyarmati</msgArea>
+<msgArea code="1504">Ibrányi</msgArea>
+<msgArea code="1505">Kemecsei</msgArea>
+<msgArea code="1506">Kisvárdai</msgArea>
+<msgArea code="1507">Mátészalkai</msgArea>
+<msgArea code="1508">Nagykállói</msgArea>
+<msgArea code="1509">Nyírbátori</msgArea>
+<msgArea code="1510">Nyíregyházi</msgArea>
+<msgArea code="1511">Tiszavasvári</msgArea>
+<msgArea code="1512">Vásárosnaményi</msgArea>
+<msgArea code="1513">Záhonyi</msgArea>
+<msgArea code="1601">Jászapáti</msgArea>
+<msgArea code="1602">Jászberényi</msgArea>
+<msgArea code="1603">Karcagi</msgArea>
+<msgArea code="1604">Kunhegyesi</msgArea>
+<msgArea code="1605">Kunszentmártoni</msgArea>
+<msgArea code="1606">Mezőtúri</msgArea>
+<msgArea code="1607">Szolnoki</msgArea>
+<msgArea code="1608">Tiszafüredi</msgArea>
+<msgArea code="1609">Törökszentmiklósi</msgArea>
+<msgArea code="1701">Bonyhádi</msgArea>
+<msgArea code="1702">Dombóvári</msgArea>
+<msgArea code="1703">Paksi</msgArea>
+<msgArea code="1704">Szekszárdi</msgArea>
+<msgArea code="1705">Tamási</msgArea>
+<msgArea code="1706">Tolnai</msgArea>
+<msgArea code="1801">Celldömölki</msgArea>
+<msgArea code="1802">Körmendi</msgArea>
+<msgArea code="1803">Kőszegi</msgArea>
+<msgArea code="1804">Sárvári</msgArea>
+<msgArea code="1805">Szentgotthárdi</msgArea>
+<msgArea code="1806">Szombathelyi</msgArea>
+<msgArea code="1807">Vasvári</msgArea>
+<msgArea code="1901">Ajkai</msgArea>
+<msgArea code="1902">Balatonalmádi</msgArea>
+<msgArea code="1903">Balatonfüredi</msgArea>
+<msgArea code="1904">Devecseri</msgArea>
+<msgArea code="1905">Pápai</msgArea>
+<msgArea code="1906">Sümegi</msgArea>
+<msgArea code="1907">Tapolcai</msgArea>
+<msgArea code="1908">Várpalotai</msgArea>
+<msgArea code="1909">Veszprémi</msgArea>
+<msgArea code="1910">Zirci</msgArea>
+<msgArea code="2001">Keszthelyi</msgArea>
+<msgArea code="2002">Lenti</msgArea>
+<msgArea code="2003">Letenyei</msgArea>
+<msgArea code="2004">Nagykanizsai</msgArea>
+<msgArea code="2005">Zalaegerszegi</msgArea>
+<msgArea code="2006">Zalaszentgróti</msgArea>
+</msgAreas>
+
+<area>
+<areadesc code="201">Bólyi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="202">Komlói</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="203">Mohácsi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="204">Pécsi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="205">Pécsváradi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="206">Hegyháti</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="208">Siklósi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="209">Szentlőrinci</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="301">Bajai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="302">Bácsalmási</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="303">Jánoshalmai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="304">Kalocsai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="306">Kiskőrösi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="308">Kiskunhalasi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="401">Békési</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="402">Békéscsabai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="404">Gyulai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="405">Mezőkovácsházai</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="406">Orosházi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="407">Sarkadi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="409">Szeghalmi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="602">Hódmezővásárhelyi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="604">Makói</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="605">Mórahalmi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="606">Szegedi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="1701">Bonyhádi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area>
+<area>
+<areadesc code="1704">Szekszárdi</areadesc>
+<info>
+<event code="b">Wind Gust</event>
+<level code="1">1</level>
+<description>The windspeed can temporarily exceed 70 km/h.</description>
+<remark></remark>
+<web>http://www.met.hu/en/idojaras/veszelyjelzes/riasztas/</web>
+</info>
+</area></msg>
